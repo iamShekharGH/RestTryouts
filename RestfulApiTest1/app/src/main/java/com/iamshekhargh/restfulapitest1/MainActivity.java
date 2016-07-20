@@ -7,25 +7,23 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import retrofit2.converter.gson.GsonConverterFactory;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.annotation.Retention;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
 
 public class MainActivity extends AppCompatActivity {
     TextView name,email,mobile,result;
@@ -79,54 +77,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected String get(String path){
-        String dataUrl = "http://handi.herokuapp.com/";
-        //String dataUrlParameters = "email="+"pp@gmail.com"+"&name="+"priyabrat";
-        URL url;
-        HttpsURLConnection connection = null;
-        String line = "empty";
+        String dataUrl = "https://handi.herokuapp.com/";
+        OkHttpClient client = new OkHttpClient();
+        //String url = "https://handi.herokuapp.com/"+path;
+        //String run(String url) throws IOException {
+            Request request = new Request.Builder()
+                    .url(dataUrl)
+                    .build();
+
+        Response response = null;
         try {
-// Create connection
-            url = new URL(dataUrl+path);
-            connection = (HttpsURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Content-Type","application/json");
-            //connection.setRequestProperty("Content-Length","" + 0);
-            //connection.setRequestProperty("Content-Language", "en-US");
-            connection.setUseCaches(false);
-            connection.setDoInput(true);
-            //connection.setDoOutput(true);
-// Send request
-//            DataOutputStream wr = new DataOutputStream(
-//                    connection.getOutputStream());
-//            //wr.writeBytes(dataUrlParameters);
-//            wr.flush();
-//            wr.close();
-// Get Response
-
-            InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-            StringBuffer response = new StringBuffer();
-            while ((line = rd.readLine()) != null) {
-                response.append(line);
-                response.append('\r');
-            }
-            rd.close();
-            String responseStr = response.toString();
-            Log.d("Server response",responseStr);
-            Log.d("After","Earth");
-        } catch (Exception e) {
-
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
             e.printStackTrace();
-
-        } finally {
-
-            if (connection != null) {
-                connection.disconnect();
-            }
         }
-        Log.d("line get",line);
-        return line;
+        ResponseBody body = response.body();
+
+
+        //}
+        //run(dataUrl+path);
+        Log.d("body",""+body.toString());
+        return body.toString();
     }
 
 
@@ -148,6 +119,56 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
+
+
+    //String dataUrlParameters = "email="+"pp@gmail.com"+"&name="+"priyabrat";
+//    URL url;
+//    HttpsURLConnection connection = null;
+//    String line = "empty";
+//try {
+//// Create connection
+//        url = new URL(dataUrl+path);
+//        connection = (HttpsURLConnection) url.openConnection();
+//        connection.setRequestMethod("GET");
+//        connection.setRequestProperty("Content-Type","application/json");
+//        //connection.setRequestProperty("Content-Length","" + 0);
+//        //connection.setRequestProperty("Content-Language", "en-US");
+//        connection.setUseCaches(false);
+//        connection.setDoInput(true);
+        //connection.setDoOutput(true);
+// Send request
+//            DataOutputStream wr = new DataOutputStream(
+//                    connection.getOutputStream());
+//            //wr.writeBytes(dataUrlParameters);
+//            wr.flush();
+//            wr.close();
+// Get Response
+
+//        InputStream is = connection.getInputStream();
+//        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+//
+//        StringBuffer response = new StringBuffer();
+//        while ((line = rd.readLine()) != null) {
+//        response.append(line);
+//        response.append('\r');
+//        }
+//        rd.close();
+//        String responseStr = response.toString();
+//        Log.d("Server response",responseStr);
+//        Log.d("After","Earth");
+//        } catch (Exception e) {
+//
+//        e.printStackTrace();
+//
+//        } finally {
+//
+//        if (connection != null) {
+//        connection.disconnect();
+//        }
+//        }
+//        Log.d("line get",line);
+//        return line;
 
 
 
