@@ -19,6 +19,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -80,12 +82,12 @@ public class MainActivity extends AppCompatActivity {
         String dataUrl = "http://handi.herokuapp.com/";
         //String dataUrlParameters = "email="+"pp@gmail.com"+"&name="+"priyabrat";
         URL url;
-        HttpURLConnection connection = null;
+        HttpsURLConnection connection = null;
         String line = "empty";
         try {
 // Create connection
             url = new URL(dataUrl+path);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type","application/json");
             //connection.setRequestProperty("Content-Length","" + 0);
@@ -112,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
             rd.close();
             String responseStr = response.toString();
             Log.d("Server response",responseStr);
+            Log.d("After","Earth");
         } catch (Exception e) {
 
             e.printStackTrace();
