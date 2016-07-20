@@ -1,5 +1,6 @@
 package com.iamshekhargh.restfulapitest1;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +19,18 @@ public class MainActivity extends AppCompatActivity {
     TextView name,email,mobile,result;
     Button sendTOServer;
     String displayInputData;
+    int counter =0;
+    private final Handler mHandler = new Handler();
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            counter+=5;
+            mHandler.removeCallbacks(runnable);
+            mHandler.postDelayed(runnable,5000);
+
+        }
+    };
+
 
 
     @Override
@@ -29,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl("http://handi.herokuapp.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+        HandiServices service = retrofit.create(HandiServices.class);
 
         name = (TextView)findViewById(R.id.editText_Name);
         email = (TextView)findViewById(R.id.editText_Email);
@@ -53,18 +67,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public interface HandiServices {
-        @GET("patients")
-        Call<List<Patient>> listRepos();   //@Path("user") String user
+        @GET("patients/current")
+        Call<CurrentResponse> decodeRes();
+        Call<List<Patient>> Patients();   //@Path("user") String user
+
     }
 
-    private static class Patient {
+
+    public static class Patient {
         String name;
         String phone;
 
-        public Patient(String nameVal, String phoneVal) {
-            name = nameVal;
-            phone = phoneVal;
-        }
+//        public Patient(String nameVal, String phoneVal) {
+//            name = nameVal;
+//            phone = phoneVal;
+//        }
+    }
+    public static class CurrentResponse {
+        Patient patient;
+        String action;
+        Integer token;
     }
 
 }
