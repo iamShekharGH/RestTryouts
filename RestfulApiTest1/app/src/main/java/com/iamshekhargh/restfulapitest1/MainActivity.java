@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public interface HandiServices {
-        @GET("users/{user}/repos -> patients")
+        @GET("patients")
         Call<List<Patient>> listRepos();   //@Path("user") String user
     }
 
