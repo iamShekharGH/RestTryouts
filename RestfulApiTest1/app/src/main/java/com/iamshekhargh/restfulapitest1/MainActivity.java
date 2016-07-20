@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.github.com")
+                .baseUrl("http://handi.herokuapp.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
