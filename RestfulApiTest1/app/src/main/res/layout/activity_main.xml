@@ -79,7 +79,8 @@
         android:layout_below="@+id/editText_MobNo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/button_send">
+        android:layout_above="@+id/button_send"
+        android:fillViewport="false">
         <TextView
             android:id="@+id/showResult"
             android:layout_width="wrap_content"

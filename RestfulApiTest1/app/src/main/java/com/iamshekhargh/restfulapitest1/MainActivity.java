@@ -7,7 +7,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import retrofit2.converter.gson.GsonConverterFactory;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.annotation.Retention;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 import retrofit2.Call;
@@ -28,10 +37,13 @@ public class MainActivity extends AppCompatActivity {
             counter+=5;
             Log.d("counter  ::",""+counter);
             //mHandler.removeCallbacks(runnable);
-            mHandler.postDelayed(runnable,5000);
+            mHandler.postDelayed(this,5000);
+            get("patients/");
 
         }
     };
+
+
 
 
 
@@ -40,11 +52,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://handi.herokuapp.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        HandiServices service = retrofit.create(HandiServices.class);
+
 
         name = (TextView)findViewById(R.id.editText_Name);
         email = (TextView)findViewById(R.id.editText_Email);
@@ -64,16 +72,61 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-    }
-
-    public interface HandiServices {
-        @GET("patients/current")
-        Call<CurrentResponse> decodeRes();
-        //Call<List<Patient>> Patients();   //@Path("user") String user
+        mHandler.post(runnable);
 
     }
+
+    protected String get(String path){
+        String dataUrl = "http://handi.herokuapp.com/";
+        //String dataUrlParameters = "email="+"pp@gmail.com"+"&name="+"priyabrat";
+        URL url;
+        HttpURLConnection connection = null;
+        String line = "empty";
+        try {
+// Create connection
+            url = new URL(dataUrl+path);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type","application/json");
+            //connection.setRequestProperty("Content-Length","" + 0);
+            //connection.setRequestProperty("Content-Language", "en-US");
+            connection.setUseCaches(false);
+            connection.setDoInput(true);
+            //connection.setDoOutput(true);
+// Send request
+//            DataOutputStream wr = new DataOutputStream(
+//                    connection.getOutputStream());
+//            //wr.writeBytes(dataUrlParameters);
+//            wr.flush();
+//            wr.close();
+// Get Response
+
+            InputStream is = connection.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+            StringBuffer response = new StringBuffer();
+            while ((line = rd.readLine()) != null) {
+                response.append(line);
+                response.append('\r');
+            }
+            rd.close();
+            String responseStr = response.toString();
+            Log.d("Server response",responseStr);
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        Log.d("line get",line);
+        return line;
+    }
+
+
 
 
     public static class Patient {
@@ -92,3 +145,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
+
+
+//    Retrofit retrofit = new Retrofit.Builder()
+//            .baseUrl("http://handi.herokuapp.com/")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build();
+
+
+//@Retention(RUNTIME)
+//@interface Json {
+//}
+
+
+
+//
+//public interface HandiServices {
+//    @GET("patients/current") @Json
+//    Call<CurrentResponse> decodeRes();
+//    //Call<List<Patient>> Patients();   //@Path("user") String user
+//
+//}
