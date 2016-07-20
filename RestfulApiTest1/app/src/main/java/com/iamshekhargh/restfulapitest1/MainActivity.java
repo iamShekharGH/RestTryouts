@@ -38,7 +38,11 @@ public class MainActivity extends AppCompatActivity {
             Log.d("counter  ::",""+counter);
             //mHandler.removeCallbacks(runnable);
             mHandler.postDelayed(this,5000);
-            get("patients/");
+            try {
+                get("patients/");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
     };
@@ -76,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    protected String get(String path){
+    protected String get(String path) throws Exception{
+
         String dataUrl = "https://handi.herokuapp.com/";
         OkHttpClient client = new OkHttpClient();
         //String url = "https://handi.herokuapp.com/"+path;
@@ -85,12 +90,8 @@ public class MainActivity extends AppCompatActivity {
                     .url(dataUrl)
                     .build();
 
-        Response response = null;
-        try {
-            response = client.newCall(request).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Response response = client.newCall(request).execute();
+
         ResponseBody body = response.body();
 
 
