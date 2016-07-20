@@ -3,6 +3,7 @@ package com.iamshekhargh.restfulapitest1;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             counter+=5;
-            mHandler.removeCallbacks(runnable);
+            Log.d("counter  ::",""+counter);
+            //mHandler.removeCallbacks(runnable);
             mHandler.postDelayed(runnable,5000);
 
         }
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     public interface HandiServices {
         @GET("patients/current")
         Call<CurrentResponse> decodeRes();
-        Call<List<Patient>> Patients();   //@Path("user") String user
+        //Call<List<Patient>> Patients();   //@Path("user") String user
 
     }
 
