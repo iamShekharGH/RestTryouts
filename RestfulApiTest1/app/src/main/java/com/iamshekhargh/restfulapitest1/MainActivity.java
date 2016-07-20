@@ -6,6 +6,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+
 public class MainActivity extends AppCompatActivity {
     TextView name,email,mobile,result;
     Button sendTOServer;
@@ -16,6 +24,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.github.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
         name = (TextView)findViewById(R.id.editText_Name);
         email = (TextView)findViewById(R.id.editText_Email);
         mobile = (TextView)findViewById(R.id.editText_MobNo);
@@ -37,4 +51,20 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    public interface HandiServices {
+        @GET("users/{user}/repos -> patients")
+        Call<List<Patient>> listRepos();   //@Path("user") String user
+    }
+
+    private static class Patient {
+        String name;
+        String phone;
+
+        public Patient(String nameVal, String phoneVal) {
+            name = nameVal;
+            phone = phoneVal;
+        }
+    }
+
 }
