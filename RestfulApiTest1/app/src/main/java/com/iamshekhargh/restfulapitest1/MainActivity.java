@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            String dataUrl = "http://handi.herokuapp.com/";
+            String dataUrl = "https://handi.herokuapp.com/";
 
             //OkHttpClient client = new OkHttpClient();
             //String url = "https://handi.herokuapp.com/"+path;
@@ -190,7 +190,9 @@ public class MainActivity extends AppCompatActivity {
 
             //}
             //run(dataUrl+path);
-            Log.d("body",""+body.toString());
+            try {
+                Log.d("body", "" + body.string());
+            } catch(Exception ex){}
             return body.toString();
             //return get("");
             //return null;
