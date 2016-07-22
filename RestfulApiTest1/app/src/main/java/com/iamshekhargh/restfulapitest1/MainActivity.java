@@ -1,5 +1,6 @@
 package com.iamshekhargh.restfulapitest1;
 
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,25 +25,48 @@ import okhttp3.ResponseBody;
 
 import javax.net.ssl.HttpsURLConnection;
 
+//Output
+/*
+* com.iamshekhargh.restfulapitest1 D/ThreadedRenderer: mThreadGroupCpuId 2 mRenderThreadCpuId 0 affinity
+com.iamshekhargh.restfulapitest1 D/Url::: http://handi.herokuapp.com/
+com.iamshekhargh.restfulapitest1 D/body: okhttp3.internal.http.RealResponseBody@27e80372
+com.iamshekhargh.restfulapitest1 D/counter  ::: 10
+com.iamshekhargh.restfulapitest1 D/Url::: http://handi.herokuapp.com/
+com.iamshekhargh.restfulapitest1 D/body: okhttp3.internal.http.RealResponseBody@163c1440
+com.iamshekhargh.restfulapitest1 D/counter  ::: 15
+com.iamshekhargh.restfulapitest1 D/Url::: http://handi.herokuapp.com/
+com.iamshekhargh.restfulapitest1 D/body: okhttp3.internal.http.RealResponseBody@272ee4be
+com.iamshekhargh.restfulapitest1 D/counter  ::: 20
+
+* */
+
 
 public class MainActivity extends AppCompatActivity {
     TextView name,email,mobile,result;
     Button sendTOServer;
     String displayInputData;
     int counter =0;
+    OkHttpClient okHttpClient = new OkHttpClient();
     private final Handler mHandler = new Handler();
     private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
             counter+=5;
             Log.d("counter  ::",""+counter);
-            //mHandler.removeCallbacks(runnable);
             mHandler.postDelayed(this,5000);
-            try {
-                get("patients/");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            if (counter%10==0){
+//                thread.start();
+//            }else {
+//                thread.stop();
+//            }
+            //thread.start();
+            new RunNetworkINBackground().execute("","","");
+//            try {
+//
+//                get("patients/");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
         }
     };
@@ -51,12 +75,23 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+//    Request request;
+//    OkHttpClient okHttpClient = new OkHttpClient();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        request = new Request().Builder().url("http://handi.herokuapp.com").build();
+//        Response response = okHttpClient.execute(request);
 
+//        try {
+//            get("current");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         name = (TextView)findViewById(R.id.editText_Name);
         email = (TextView)findViewById(R.id.editText_Email);
@@ -77,23 +112,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mHandler.post(runnable);
+        //
+
+
 
     }
 
     protected String get(String path) throws Exception{
 
         String dataUrl = "https://handi.herokuapp.com/";
-        OkHttpClient client = new OkHttpClient();
+
+        //OkHttpClient client = new OkHttpClient();
         //String url = "https://handi.herokuapp.com/"+path;
         //String run(String url) throws IOException {
             Request request = new Request.Builder()
                     .url(dataUrl)
                     .build();
 
-        Response response = client.newCall(request).execute();
+        Response response = okHttpClient.newCall(request).execute();
 
         ResponseBody body = response.body();
-
+        Log.d("Url::",""+dataUrl);
 
         //}
         //run(dataUrl+path);
@@ -119,7 +158,85 @@ public class MainActivity extends AppCompatActivity {
         Integer token;
     }
 
+    class RunNetworkINBackground extends AsyncTask<String,String,String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String dataUrl = "http://handi.herokuapp.com/";
+
+            //OkHttpClient client = new OkHttpClient();
+            //String url = "https://handi.herokuapp.com/"+path;
+            //String run(String url) throws IOException {
+
+            Request request = new Request.Builder()
+                    .url(dataUrl)
+                    .build();
+
+            Response response = null;
+            try {
+                response = okHttpClient.newCall(request).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            ResponseBody body = response.body();
+            Log.d("Url::",""+dataUrl);
+
+            //}
+            //run(dataUrl+path);
+            Log.d("body",""+body.toString());
+            return body.toString();
+            //return get("");
+            //return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+    }
+
+
 }
+
+/*
+* Thread thread =new Thread(new Runnable() {
+        @Override
+        public void run() {
+            String dataUrl = "http://handi.herokuapp.com/";
+
+            //OkHttpClient client = new OkHttpClient();
+            //String url = "https://handi.herokuapp.com/"+path;
+            //String run(String url) throws IOException {
+            Request request = new Request.Builder()
+                    .url(dataUrl)
+                    .build();
+
+            Response response = null;
+            try {
+                response = okHttpClient.newCall(request).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            ResponseBody body = response.body();
+            Log.d("Url::",""+dataUrl);
+
+            //}
+            //run(dataUrl+path);
+            Log.d("body",""+body.toString());
+
+        }
+    });
+*
+* */
+
 
 
 
